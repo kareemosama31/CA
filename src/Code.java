@@ -369,6 +369,7 @@ public class Code {
 		}
 		return register;
 	}
+	
 
 	public static String fetch() {
 		String instruction = memory[pc];
@@ -389,73 +390,201 @@ public class Code {
 		 String address=s.substring(4, 32);
 		 ArrayList<String> result=new ArrayList<String>();
 		 result.add(opcode);
-
+		int t,t1,t2;
 		 switch(opcode){
 			case "0000":
-			case "0001":int t2=Integer.parseInt(Rd,2);
-						result.add(""+t2);
-						int t=Integer.parseInt(Rs,2);
+			case "0001":
+						 t=Integer.parseInt(Rs,2);
 						if (t==0){
 							result.add("0");
 						}
 						else{
 							result.add(""+(registerFile[t-1]));
 						}
-						int t1=Integer.parseInt(Rt,2);
+						 t1=Integer.parseInt(Rt,2);
 						if (t1==0){
 							result.add("0");
 						}
 						else{
 							result.add(""+(registerFile[t1-1]));
 						}
+						 t2=Integer.parseInt(Rd,2);
+						result.add(""+t2);
 						
 						break;
 			case "0010":
 			case "0011":
-			case "0100":
 			case "0101":
 			case "0110":
 			case "1010":
-			case "1011":int i2=Integer.parseInt(Rd,2);
-						result.add(""+i2);
-						int i=Integer.parseInt(Rs,2);
-						if (i==0){
+			case "1011":
+						 t=Integer.parseInt(Rs,2);
+						if (t==0){
 							result.add("0");
 						}
 						else{
-							result.add(""+(registerFile[i-1]));
+							result.add(""+(registerFile[t-1]));
 						}
-						int i1=Integer.parseInt(immediate,2);
-							result.add(""+i1);
+						 t1=Integer.parseInt(immediate,2);
+						result.add(""+t1);
+					    t2=Integer.parseInt(Rd,2);
+						result.add(""+t2);	
 						break;
+						
 			case "0111":int j=Integer.parseInt(address,2);
 						result.add(""+j);
 						break;
 			case "1000":
-			case "1001":int s2=Integer.parseInt(Rd,2);
-						result.add(""+s2);
-						int s1=Integer.parseInt(Rs,2);
-						if (s1==0){
+			case "1001":
+						t=Integer.parseInt(Rs,2);
+						if (t==0){
 							result.add("0");
 						}
 						else{
-							result.add(""+(registerFile[s1-1]));
+							result.add(""+(registerFile[t-1]));
 						}
-						int s3=Integer.parseInt(Shamt,2);
-							result.add(""+s3);
+						 t1=Integer.parseInt(Shamt,2);
+							result.add(""+t1);
+							t2=Integer.parseInt(Rd,2);
+							result.add(""+t2);
 							break;
-						
+			case "0100":
+						t=Integer.parseInt(Rs,2);
+						if (t==0){
+							result.add("0");
+						}
+						else{
+							result.add(""+(registerFile[t-1]));
+						}
+						int i1=Integer.parseInt(immediate,2);
+						result.add(""+i1);
+						t1=Integer.parseInt(Rd,2);
+						if (t1==0){
+							result.add("0");
+						}
+						else{
+							result.add(""+(registerFile[t1-1]));
+						}
+						break;
 						
 		 }
 
 		return result;
 	}
+	public static int execute( ArrayList<String> s){
+		int result=-1;
+		int r1;
+		int r2;
+		int x;
+		int imm;
+		switch(s.get(0)){
+			case "0000"://add
+						r1=Integer.parseInt(s.get(1));
+						r2=Integer.parseInt(s.get(2));
+						x=r1+r2;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;
+			case "0001"://sub
+						r1=Integer.parseInt(s.get(1));
+						r2=Integer.parseInt(s.get(2));
+						x=r1-r2;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;
+						
+			case "0010": //muli
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1*imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;
+						
+			case "0011"://addi
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1+imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;		
+			case "0100"://bne
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(3));
+						if (r1!=imm){
+							pc=pc+1+Integer.parseInt(s.get(3));
+							result=1;
+						}
+						else{
+							result =0;
+						}
+						break;
+			case "0101"://andi
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1&imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;	
+			case "0110"://ori
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1|imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;
+			case "0111"://jump most probs faty
+						String d= Integer.toBinaryString(pc);
+						d=d.substring(28, 31);
+						pc=Integer.parseInt(d +""+ s.get(1));
+						result=0;
+						break;
+			case "1000"://LW
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1+imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;	
+			case "1001"://SW
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1+imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;	
+			case "1010"://SLL
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1<<imm;
+						System.out.println(x+s.get(3)+"pewwwwww");
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;	
+			case "1011"://SRL
+						r1=Integer.parseInt(s.get(1));
+						imm=Integer.parseInt(s.get(2));
+						x=r1>>>imm;
+						registerFile[Integer.parseInt(s.get(3))]=x;
+						result=x;
+						break;	
+			
+						
+						
+		 }
+		 return result;
+
+	}
 
 	public static void main(String[] args) {
 		int i=222;
-		String s=assemblytoBinary("SRL R1 R2 9222229");
+		String s=assemblytoBinary("ADDI R1 R2 16");
+		String a=assemblytoBinary("SLL R2 R1 2");
 		ArrayList<String> y=decode(s);
-		System.out.println(y);
+		ArrayList<String> x=decode(a);
+		int result=execute(y);
+		int result2=execute(x);
+		System.out.println(s+"    "+result+" "+a+"  "+result2);
 
 		
 	}
