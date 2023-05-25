@@ -2,15 +2,25 @@ package src;
 import java.io.*;
 import java.util.ArrayList;
 
+import javax.lang.model.util.ElementScanner14;
+
 public class Code {
 	public static int[] registerFile = new int[31];
 	public static String[] memory = new String[2048];//0-1023 instructions 1024-2047 data
-	public static int pc = 0;
-	public final static int zero = 0;
+	public static int pc = 0; //pc register
+	public final static int zero = 0; //zero reg
 	public static File file;
 	public static int startI=0;
 	public static int startD=1024;
+	static  int Inst=0;
+	static  int clock=0;
+	public static fetch fetch;
+    public static decode decode;
+    public static execute execute;
+    public static Memory Memory;
+    public static writeBack writeBack;
 
+	
 
 	public static void init() throws IOException {
 		file = new File("assemblyInstructions.txt");
@@ -18,7 +28,7 @@ public class Code {
 		BufferedReader br = new BufferedReader(fr);
 		String temp = br.readLine();
 		while (temp != null) {
-
+			Inst++;
 			String instruction = assemblytoBinary(temp);
 			memory[startI]=instruction;
 			startI++;
@@ -29,6 +39,25 @@ public class Code {
 		for(int i=0;i<registerFile.length;i++){
 			registerFile[i]=0;
 		}
+		fetch= new fetch();
+		decode=new decode();
+		execute=new execute();
+		Memory=new Memory();
+		writeBack=new writeBack();
+		fetch.pc=pc;
+		fetch.memory=memory;
+		decode.registerFile=registerFile;
+		execute.pc=pc;
+		Memory.memory=memory;
+		Memory.registerFile=registerFile;
+		writeBack.registerFile=registerFile;
+		fetch.decode=decode;
+		decode.execute=execute;
+		execute.memory=Memory;
+		Memory.writeBack=writeBack;
+	}
+	public static void clockCal(){
+		clock=7+((Inst-1)*2);
 	}
 
 
@@ -177,6 +206,7 @@ public class Code {
 				System.out.println(newImm.length());
 			}
 			instruction = ("0" + Integer.toBinaryString(opcode)+ (newImm));//32?
+			System.out.println(instruction+"habiba");
 			break;
 		case "SLL":
 			opcode = 8;
@@ -371,220 +401,297 @@ public class Code {
 	}
 	
 
-	public static String fetch() {
-		String instruction = memory[pc];
-		if (pc < 1023) {
-			pc++;
-		} else {
-			pc = 0;
-		}
-		return instruction;
-	}
-	public static ArrayList<String> decode(String s){
-		 String opcode=s.substring(0, 4);
-		 String Rd=s.substring(4, 9);
-		 String Rs=s.substring(9, 14);
-		 String Rt=s.substring(14, 19);
-		 String Shamt=s.substring(19, 32); 
-		 String immediate=s.substring(14, 32);
-		 String address=s.substring(4, 32);
-		 ArrayList<String> result=new ArrayList<String>();
-		 result.add(opcode);
-		int t,t1,t2;
-		 switch(opcode){
-			case "0000":
-			case "0001":
-						 t=Integer.parseInt(Rs,2);
-						if (t==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t-1]));
-						}
-						 t1=Integer.parseInt(Rt,2);
-						if (t1==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t1-1]));
-						}
-						 t2=Integer.parseInt(Rd,2);
-						result.add(""+t2);
+	// public static String fetch() {
+	// 	String instruction = memory[pc];
+	// 	if (pc < 1023) {
+	// 		pc++;
+	// 	} else {
+	// 		pc = 0;
+	// 	}
+	// 	return instruction;
+	// }
+	// public static ArrayList<String> decode(String s){
+	// 	 String opcode=s.substring(0, 4);
+	// 	 String Rd=s.substring(4, 9);
+	// 	 String Rs=s.substring(9, 14);
+	// 	 String Rt=s.substring(14, 19);
+	// 	 String Shamt=s.substring(19, 32); 
+	// 	 String immediate=s.substring(14, 32);
+	// 	 String address=s.substring(4, 32);
+	// 	 ArrayList<String> result=new ArrayList<String>();
+	// 	 result.add(opcode);
+	// 	int t,t1,t2;
+	// 	 switch(opcode){
+	// 		case "0000":
+	// 		case "0001":
+	// 					if(!Rs.equals("0zer0")){
+	// 					 t=Integer.parseInt(Rs,2);
 						
-						break;
-			case "0010":
-			case "0011":
-			case "0101":
-			case "0110":
-			case "1010":
-			case "1011":
-						 t=Integer.parseInt(Rs,2);
-						if (t==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t-1]));
-						}
-						 t1=Integer.parseInt(immediate,2);
-						result.add(""+t1);
-					    t2=Integer.parseInt(Rd,2);
-						result.add(""+t2);	
-						break;
 						
-			case "0111":int j=Integer.parseInt(address,2);
-						result.add(""+j);
-						break;
-			case "1000":
-			case "1001":
-						t=Integer.parseInt(Rs,2);
-						if (t==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t-1]));
-						}
-						 t1=Integer.parseInt(Shamt,2);
-							result.add(""+t1);
-							t2=Integer.parseInt(Rd,2);
-							result.add(""+t2);
-							break;
-			case "0100":
-						t=Integer.parseInt(Rs,2);
-						if (t==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t-1]));
-						}
-						int i1=Integer.parseInt(immediate,2);
-						result.add(""+i1);
-						t1=Integer.parseInt(Rd,2);
-						if (t1==0){
-							result.add("0");
-						}
-						else{
-							result.add(""+(registerFile[t1-1]));
-						}
-						break;
 						
-		 }
+	// 						result.add(""+(registerFile[t-1]));
+						
+	// 					}
+	// 					else{
+	// 						result.add("0");
+	// 					}
+	// 					if(!Rt.equals("0zer0")){
+	// 					 t1=Integer.parseInt(Rt,2);
+						
+							
+	// 						result.add(""+(registerFile[t1-1]));
+						
+	// 					}
+	// 					else{
+	// 						result.add("0");
+	// 					}
+	// 					if(!Rd.equals("0zer0")){
+	// 					 t2=Integer.parseInt(Rd,2);
+	// 					result.add(""+t2);
+	// 					}
+	// 					else{
+	// 						result.add("zero");
+	// 					}
+	// 					break;
+	// 		case "0010":
+	// 		case "0011":
+	// 		case "0101":
+	// 		case "0110":
+	// 		case "1010":
+	// 		case "1011":
+	// 					if(!Rs.equals("0zer0")){
+	// 					 t=Integer.parseInt(Rs,2);
+						
+	// 						result.add(""+(registerFile[t]));
+						
+	// 				}
+	// 				else{
+	// 					result.add("0");
+	// 				}
+						
+	// 					 t1=Integer.parseInt(immediate,2);
+	// 					result.add(""+t1);
+	// 					if(!Rd.equals("0zer0")){
+	// 				    t2=Integer.parseInt(Rd,2);
+	// 					result.add(""+t2);	
+	// 					}
+	// 					else{
+	// 						result.add("zero");
+	// 					}
+	// 					break;
+						
+	// 		case "0111":int j=Integer.parseInt(address,2);
+	// 					result.add(""+j);
+	// 					break;
+	// 		case "1000":
+	// 		case "1001":
+	// 					if(!Rs.equals("0zer0")){
+	// 					t=Integer.parseInt(Rs,2);
+						
+	// 						result.add(""+(registerFile[t-1]));
+						
+	// 				}
+	// 				else{
+	// 					result.add("0");
+	// 				}
+	// 					 t1=Integer.parseInt(Shamt,2);
+	// 						result.add(""+t1);
 
-		return result;
-	}
-	public static int execute( ArrayList<String> s){
-		int result=-1;
-		int r1;
-		int r2;
-		int x;
-		int imm;
-		switch(s.get(0)){
-			case "0000"://add
-						r1=Integer.parseInt(s.get(1));
-						r2=Integer.parseInt(s.get(2));
-						x=r1+r2;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;
-			case "0001"://sub
-						r1=Integer.parseInt(s.get(1));
-						r2=Integer.parseInt(s.get(2));
-						x=r1-r2;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;
+	// 						if(!Rd.equals("0zer0")){
+	// 				    t2=Integer.parseInt(Rd,2);
+	// 					result.add(""+t2);	
+	// 					}
+	// 					else{
+	// 						result.add("zero");
+	// 					}
+	// 					break;
+	// 		case "0100":
+	// 				if(!Rs.equals("0zer0")){
+	// 					t=Integer.parseInt(Rs,2);
 						
-			case "0010": //muli
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1*imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;
+	// 						result.add(""+(registerFile[t-1]));
 						
-			case "0011"://addi
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1+imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;		
-			case "0100"://bne
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(3));
-						if (r1!=imm){
-							pc=pc+1+Integer.parseInt(s.get(3));
-							result=1;
-						}
-						else{
-							result =0;
-						}
-						break;
-			case "0101"://andi
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1&imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;	
-			case "0110"://ori
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1|imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;
-			case "0111"://jump most probs faty
-						String d= Integer.toBinaryString(pc);
-						d=d.substring(28, 31);
-						pc=Integer.parseInt(d +""+ s.get(1));
-						result=0;
-						break;
-			case "1000"://LW
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1+imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;	
-			case "1001"://SW
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1+imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;	
-			case "1010"://SLL
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1<<imm;
-						System.out.println(x+s.get(3)+"pewwwwww");
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;	
-			case "1011"://SRL
-						r1=Integer.parseInt(s.get(1));
-						imm=Integer.parseInt(s.get(2));
-						x=r1>>>imm;
-						registerFile[Integer.parseInt(s.get(3))]=x;
-						result=x;
-						break;	
+	// 				}
+	// 				else{
+	// 					result.add("0");
+	// 				}
+	// 					int i1=Integer.parseInt(immediate,2);
+	// 					result.add(""+i1);
+	// 					if(!Rd.equals("0zer0")){
+	// 						t2=Integer.parseInt(Rd,2);
+	// 						result.add(""+t2);	
+	// 						}
+	// 						else{
+	// 							result.add("zero");
+	// 						}
+	// 						break;
+						
+	// 	 }
+
+	// 	return result;
+	// }
+	// public static int execute( ArrayList<String> s){
+	// 	int result=-1;
+	// 	int r1;
+	// 	int r2;
+	// 	int x;
+	// 	int imm;
+	// 	switch(s.get(0)){
+	// 		case "0000"://add
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					r2=Integer.parseInt(s.get(2));
+	// 					x=r1+r2;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;
+	// 		case "0001"://sub
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					r2=Integer.parseInt(s.get(2));
+	// 					x=r1-r2;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;
+						
+	// 		case "0010": //muli
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1*imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;
+						
+	// 		case "0011"://addi
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1+imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;		
+	// 		case "0100"://bne
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(3));
+	// 					if (r1!=imm){
+	// 						pc=pc+1+Integer.parseInt(s.get(3));
+	// 						result=1;
+	// 					}
+	// 					else{
+	// 						result =0;
+	// 					}
+	// 					break;
+	// 		case "0101"://andi
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1&imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;	
+	// 		case "0110"://ori
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1|imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;
+	// 		case "0111"://jump most probs faty
+	// 					String d= Integer.toBinaryString(pc);
+	// 					if(d.length()>=31)
+	// 						d=d.substring(28, 31);
+	// 					System.out.println("pc"+pc);
+	// 					pc=(Integer.parseInt(d,2))|(Integer.parseInt(s.get(1)));
+	// 					System.out.println(pc+"pc");
+	// 					result=0;
+	// 					break;
+	// 		case "1010"://LW
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1+imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;	
+	// 		case "1011"://SW
+	// 					r1=Integer.parseInt(s.get(1)); // rs 
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1+imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;	
+	// 		case "1000"://SLL
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1<<imm;
+	// 					System.out.println(x+s.get(3)+"pewwwwww");
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;	
+	// 		case "1001"://SRL
+	// 					r1=Integer.parseInt(s.get(1));
+	// 					imm=Integer.parseInt(s.get(2));
+	// 					x=r1>>>imm;
+	// 					//registerFile[Integer.parseInt(s.get(3))]=x;
+	// 					result=x;
+	// 					break;	
 			
 						
 						
-		 }
-		 return result;
+	// 	 }
+	// 	 return result;
 
+	// }
+	// public static String Memory(int result,ArrayList<String> s){
+	// 	String res=null;
+    //     int r2;
+    //     int x;
+    //     int imm;
+	// 	System.out.println(s.get(0));
+    //     switch(s.get(0)){
+    //         case "1010"://LW
+                        
+    //                     res=memory[result];
+	// 					System.out.println(res+"zzzzz");
+    //                     break;
+    //         case "1011"://SW
+	// 					if(!s.get(3).equals("0zer0")){
+    //                     int r=registerFile[Integer.parseInt(s.get(3))];
+	// 					memory[result]=r+"";
+	// 					}
+						
+						
+    //                     break;
+    //         default:
+	// 		       return result+"";
+
+
+
+    //      }
+    //      return res;
+    // }
+
+	public static void writeBack(String result, ArrayList<String> s){
+		if(result==null)
+			return;
+		else{
+			if(!s.get(3).equals("0zer0"))
+				registerFile[(Integer.parseInt(s.get(3)))]=Integer.parseInt(result);
+		}
 	}
+	
 
 	public static void main(String[] args) {
 		int i=222;
-		String s=assemblytoBinary("ADDI R1 R2 16");
-		String a=assemblytoBinary("SLL R2 R1 2");
+		memory[7]="5";
+		registerFile[1]=8;
+		registerFile[0]=7000;
+		String s=assemblytoBinary("ADDI R2 R1 2000");
+		//String a=assemblytoBinary("SLL R2 R1 2");
 		ArrayList<String> y=decode(s);
-		ArrayList<String> x=decode(a);
+		// ArrayList<String> x=decode(a);
 		int result=execute(y);
-		int result2=execute(x);
-		System.out.println(s+"    "+result+" "+a+"  "+result2);
+		// int result2=execute(x);
+		String x=Memory(result, y);
+		writeBack(x, y);
+		for(int j=0;j<registerFile.length;j++){
+			System.out.println(registerFile[j]);
+		}
 
 		
 	}
