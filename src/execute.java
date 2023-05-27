@@ -12,6 +12,8 @@ public class execute {
         result=0;
     }
     public static void execute( ArrayList<String> s){
+		System.out.println(s+" decoded arraylist input -execute-");
+		System.out.println(ex+" instruction -execute-");
 		result=-1;
 		int r1;
 		int r2;
@@ -115,7 +117,7 @@ public class execute {
 						
 		 }
 		 memory.ex=ex;
-		
+		 System.out.println(clock+" -execute-");
 		 memory.clock=clock+2;
 		
 		 memory.memory(result,s);

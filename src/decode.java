@@ -12,6 +12,8 @@ public class decode {
         result=new ArrayList<String>();
     }
     public static void decode(String s){
+        System.out.println(s+" fetched string input -decode-");
+        System.out.println(ex+" instruction -decode-");
         String opcode=s.substring(0, 4);
         String Rd=s.substring(4, 9);
         String Rs=s.substring(9, 14);
@@ -129,7 +131,7 @@ public class decode {
                        
         }
         execute.ex=ex;
-        
+        System.out.println(clock+" -decode-");
         execute.clock=clock+2;
         
         execute.execute(result);
