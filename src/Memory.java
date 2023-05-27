@@ -13,6 +13,8 @@ public class Memory {
         res=null;
     }
     public static void memory(int result,ArrayList<String> s){
+        System.out.println(result+" result of execute input " +s +" arraylist that contains decoded input -memory-");
+        System.out.println(ex+" instruction -memory-");
         if(clock%2!=0){
             clock++;
         }
@@ -42,7 +44,7 @@ public class Memory {
 
          }
          writeBack.ex=ex;
-         
+         System.out.println(clock+" -memory-");
          writeBack.clock=++clock;
          
          writeBack.writeBack(res,s);

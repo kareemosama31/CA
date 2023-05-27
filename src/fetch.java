@@ -20,15 +20,19 @@ public class fetch {
     public static void fetch() {
        
 		instruction = memory[pc];
+       
+        
         if(instruction==null)
         return;
+        System.out.println("no inputs -fetch-");
+        System.out.println(instruction+" instruction -fetch-");
 		if (pc < 1023) {
 			pc++;
 		} else {
 			pc = 0;
 		}
         decode.ex=instruction;
-        
+        System.out.println(clock+" -fetch-");
         decode.clock=++clock;
         
         

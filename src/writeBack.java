@@ -12,12 +12,14 @@ public class writeBack {
 	public static String ex;
 
 	public static void writeBack(String result, ArrayList<String> s) {
+		System.out.println(result+" result to be written back input " +s +" arraylist that contains decoded input -writeBack-");
+		System.out.println(ex+" instruction -writeBack-");
 		if (clock == 0)
 			return;
 		if (!pipelineIsEmpty() && clock%2!=0) {
 			
 				if (result == null) {
-					
+					System.out.println(clock+" -writeBack-");
 					inst.remove(ex);
 					++clock;
 					return;
@@ -27,7 +29,7 @@ public class writeBack {
 						registerFile[(Integer.parseInt(s.get(3)))] = Integer.parseInt(result);
 				}
 				inst.remove(ex);
-				
+				System.out.println(clock+" -writeBack-");
 				++clock;
 			}
 		
