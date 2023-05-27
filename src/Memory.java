@@ -33,6 +33,14 @@ public class Memory {
 						if(!s.get(3).equals("0zer0")){
                         int r=registerFile[Integer.parseInt(s.get(3))];
 						memory[1024+result]=r+"";
+                        for (int i=1024;i<memory.length;i++){
+                            System.out.println("Data portion Update: ");
+                            System.out.print(memory[i]);
+                            if (i==(1024 +result)){
+                                System.out.print("  --> changed");
+                            }
+                            System.out.println();
+                        }
                         res=null;
 						}
 						
