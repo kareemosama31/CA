@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 public class execute {
     public static Memory memory;
+	public static String[] mem;
+	public static int[] regFile;
     public static int pc;
 	public static int result;
 	public static int clock;
@@ -117,6 +119,8 @@ public class execute {
 						
 		 }
 		 memory.ex=ex;
+		 memory.registerFile=regFile;
+		 memory.memory=mem;
 		 System.out.println(clock+" -execute-");
 		 memory.clock=clock+2;
 		

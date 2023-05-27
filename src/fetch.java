@@ -9,8 +9,10 @@ public class fetch {
     public static String instruction;
     public static decode decode;
     public static String[] memory;
+    public static int[] regFile;
     public static int pc;
     public static int clock;
+    
     public void setDecode(decode decode) {
         this.decode = decode;
     }
@@ -32,6 +34,8 @@ public class fetch {
 			pc = 0;
 		}
         decode.ex=instruction;
+        decode.registerFile=regFile;
+        decode.memory=memory;
         System.out.println(clock+" -fetch-");
         decode.clock=++clock;
         

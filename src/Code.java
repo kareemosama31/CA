@@ -7,6 +7,11 @@ import javax.lang.model.util.ElementScanner14;
 
 public class Code {
 	public static int[] registerFile = new int[31];
+	public static void setRegisterFile(int[] registerFile) {
+		Code.registerFile = registerFile;
+	}
+
+
 	public static String[] memory = new String[2048];//0-1023 instructions 1024-2047 data
 	public static int pc = 0; //pc register
 	public final static int zero = 0; //zero reg
@@ -62,6 +67,7 @@ public class Code {
 		execute.memory=Memory;
 		Memory.writeBack=writeBack;
 		writeBack.inst=inst;
+		
 	}
 	public static void clockCal(){
 		clock=7+((Inst-1)*2);
@@ -407,45 +413,40 @@ public class Code {
 		return register;
 	}
 	
-	public static void run(ArrayList<String> instructions) {
+	public static void run(ArrayList<String> instructions) throws IOException {
+		Code code=new Code();
+		code.init();
 		fetch.initialise();
 		decode.initialise();
 		execute.initialise();
 		Memory.initialise();
-		
-		clockCal();
+		writeBack.code=code;
+		code.clockCal();
 		for(int i=1;i<=clock;i++){
 			if(i%2!=0){
 				fetch.clock=i;
+				fetch.regFile=code.registerFile;
 				fetch.fetch();
 				
+				
 			}
-			if (i== clock){
-				System.out.println("Full memory:");
-				for (int j=0;j<memory.length;j++){
-					System.out.println(memory[j]);
-				}
-				System.out.println("Full Register File:");
-				for (int j=0;j<registerFile.length;j++){
-					System.out.println(registerFile[j]);
-				}
-			}
+			
 		}
+		// System.out.println("Full memory:");
+		// 		for (int j=0;j<memory.length;j++){
+		// 			System.out.println(code.memory[j]);
+		// 		}
+		// 		System.out.println("Full Register File:");
+		// 		for (int j=0;j<registerFile.length;j++){
+		// 			System.out.println(code.registerFile[j]);
+		// 		}
 	}
 	
 
-	public static void writeBack(String result, ArrayList<String> s){
-		if(result==null)
-			return;
-		else{
-			if(!s.get(3).equals("0zer0"))
-				registerFile[(Integer.parseInt(s.get(3)))]=Integer.parseInt(result);
-		}
-	}
+	
 	
 
 	public static void main(String[] args) throws IOException {
-		init();
 		run(inst);
 		
 		

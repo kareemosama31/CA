@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class decode {
     public static execute execute;
     public static int[] registerFile;
+    public static String[] memory;
     private static ArrayList<String> result;
     public static int clock;
     public static String ex;
@@ -131,6 +132,8 @@ public class decode {
                        
         }
         execute.ex=ex;
+        execute.regFile=registerFile;
+        execute.mem=memory;
         System.out.println(clock+" -decode-");
         execute.clock=clock+2;
         

@@ -52,6 +52,8 @@ public class Memory {
 
          }
          writeBack.ex=ex;
+         writeBack.memory=memory;
+         writeBack.registerFile=registerFile;
          System.out.println(clock+" -memory-");
          writeBack.clock=++clock;
          
