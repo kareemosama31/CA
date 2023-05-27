@@ -135,6 +135,7 @@ public class decode {
         execute.regFile=registerFile;
         execute.mem=memory;
         System.out.println(clock+" -decode-");
+        System.out.println("");
         execute.clock=clock+2;
         
         execute.execute(result);

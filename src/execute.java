@@ -122,6 +122,7 @@ public class execute {
 		 memory.registerFile=regFile;
 		 memory.memory=mem;
 		 System.out.println(clock+" -execute-");
+		 System.out.println("");
 		 memory.clock=clock+2;
 		
 		 memory.memory(result,s);

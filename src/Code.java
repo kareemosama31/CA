@@ -426,20 +426,23 @@ public class Code {
 			if(i%2!=0){
 				fetch.clock=i;
 				fetch.regFile=code.registerFile;
+				System.out.println("");
 				fetch.fetch();
 				
 				
 			}
 			
 		}
-		// System.out.println("Full memory:");
-		// 		for (int j=0;j<memory.length;j++){
-		// 			System.out.println(code.memory[j]);
-		// 		}
-		// 		System.out.println("Full Register File:");
-		// 		for (int j=0;j<registerFile.length;j++){
-		// 			System.out.println(code.registerFile[j]);
-		// 		}
+		System.out.println("");
+		System.out.println("Full memory:");
+				for (int j=0;j<memory.length;j++){
+					System.out.println(code.memory[j]);
+				}
+				System.out.println("");
+				System.out.println("Full Register File:");
+				for (int j=0;j<registerFile.length;j++){
+					System.out.println(code.registerFile[j]);
+				}
 	}
 	
 

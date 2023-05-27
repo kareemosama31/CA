@@ -30,20 +30,18 @@ public class writeBack {
                 return;
             } else {
                 if (!s.get(3).equals("0zer0")) {
-
+					System.out.println("R" + (Integer.parseInt(s.get(3)) -1) + " changed from "
+					+ registerFile[(Integer.parseInt(s.get(3)))] + " to " + result);
                     registerFile[(Integer.parseInt(s.get(3)))] = Integer.parseInt(result);
 					
-                    System.out.println("R" + (Integer.parseInt(s.get(3)) - 1) + " changed from "
-                            + registerFile[(Integer.parseInt(s.get(3)))] + " to " + result);
+                    
                 }
             }
             inst.remove(ex);
             System.out.println(clock + " -writeBack-");
 			code.registerFile=registerFile;
 			code.memory=memory;
-			for (int j=0;j<registerFile.length;j++){
-				System.out.println(registerFile[j]+"sara");
-			}
+			System.out.println("");
             ++clock;
         }
 

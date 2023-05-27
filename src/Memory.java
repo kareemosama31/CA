@@ -32,22 +32,18 @@ public class Memory {
             case "1011"://SW
 						if(!s.get(3).equals("0zer0")){
                         int r=registerFile[Integer.parseInt(s.get(3))];
-						memory[1024+result]=r+"";
                         System.out.println("Data portion Update: ");
-                        for (int i=1024;i<memory.length;i++){
-                           
-                            System.out.print(memory[i]);
-                            if (i==(1024 +result)){
-                                System.out.print("  --> changed");
-                            }
-                            System.out.println();
-                        }
+                        System.out.println("data location "+(1024+result)+" was changed from "+ memory[1024+result]+" to "+r);
+						memory[1024+result]=r+"";
+                        
+                        
                         res=null;
 						}
 						
 						
                         break;
-           
+           default:
+           res=result+"";
 
 
 
@@ -56,6 +52,7 @@ public class Memory {
          writeBack.memory=memory;
          writeBack.registerFile=registerFile;
          System.out.println(clock+" -memory-");
+         System.out.println("");
          writeBack.clock=++clock;
          
          writeBack.writeBack(res,s);

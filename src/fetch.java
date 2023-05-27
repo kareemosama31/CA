@@ -37,6 +37,7 @@ public class fetch {
         decode.registerFile=regFile;
         decode.memory=memory;
         System.out.println(clock+" -fetch-");
+        System.out.println("");
         decode.clock=++clock;
         
         
