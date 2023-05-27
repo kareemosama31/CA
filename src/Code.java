@@ -420,6 +420,13 @@ public class Code {
 				fetch.fetch();
 				
 			}
+			if (i== clock){
+				System.out.println("Full memory:");
+				for (int j=0;j<memory.length;j++){
+					System.out.println(memory[j]);
+				}
+				
+			}
 		}
 	}
 	
@@ -438,7 +445,7 @@ public class Code {
 		init();
 		run(inst);
 		
-
+		
 		
 	}
 
