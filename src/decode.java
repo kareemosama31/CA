@@ -5,7 +5,12 @@ import java.util.ArrayList;
 public class decode {
     public static execute execute;
     public static int[] registerFile;
-    
+    private static ArrayList<String> result;
+    public static int clock;
+    public static String ex;
+    public void initialise(){
+        result=new ArrayList<String>();
+    }
     public static void decode(String s){
         String opcode=s.substring(0, 4);
         String Rd=s.substring(4, 9);
@@ -14,7 +19,7 @@ public class decode {
         String Shamt=s.substring(19, 32); 
         String immediate=s.substring(14, 32);
         String address=s.substring(4, 32);
-        ArrayList<String> result=new ArrayList<String>();
+       result= new ArrayList<String>();
         result.add(opcode);
        int t,t1,t2;
         switch(opcode){
@@ -123,7 +128,10 @@ public class decode {
                            break;
                        
         }
-
-       execute.execute(result);
+        execute.ex=ex;
+        
+        execute.clock=clock+2;
+        
+        execute.execute(result);
    }
 }
