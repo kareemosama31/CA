@@ -425,7 +425,10 @@ public class Code {
 				for (int j=0;j<memory.length;j++){
 					System.out.println(memory[j]);
 				}
-				
+				System.out.println("Full Register File:");
+				for (int j=0;j<registerFile.length;j++){
+					System.out.println(registerFile[j]);
+				}
 			}
 		}
 	}
